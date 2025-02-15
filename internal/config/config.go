@@ -15,7 +15,7 @@ type Config struct {
 
 func Read() (Config, error) {
 
-	fullPath, err := filepath.Abs(configFile)
+	fullPath, err := getConfigFilePath()
 	if err != nil {
 		return Config{}, err
 	}
@@ -39,8 +39,17 @@ func (c *Config) SetUser(username string) error {
 	return write(*c)
 }
 
+func getConfigFilePath() (string, error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+	fullPath := filepath.Join(home, configFile)
+	return fullPath, nil
+}
+
 func write(c Config) error {
-	fullPath, err := filepath.Abs(configFile)
+	fullPath, err := getConfigFilePath()
 	if err != nil {
 		return err
 	}
